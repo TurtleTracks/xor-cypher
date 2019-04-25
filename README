@@ -1,0 +1,71 @@
+Femi Adegunloye,
+Apple Interview 2018
+
+BT Coding Assignment: 
+
+I ran a handful of tests to ensure: 
+* the keyfile was being properly rotated
+* the output was properly encrypted
+* passing the encrypyted file back into the program returns the original file 
+* large files could be encrypted with smaller keys
+* smaller files could be encrypted with large keys
+* input is copied when no key is passed in
+
+I would verify the test output was what I expected by printing hexdumps of the output,
+and by diff files that I expected to be identical. 
+
+# diff on these file should be empty: 
+$ diff "[input to case[x]]" "out[x]" 
+
+Here are some test files and how I generated them:
+
+# keyfile, plaintext, sherlock
+# I created these files manually by pasting sample text into them
+
+# one 
+$ echo -n -e '\xff' 
+
+# cypher
+$ ./encryptUtil -n 10 -k keyfile < plaintext > cypher
+
+# uncypher
+$ ./encryptUtil -n 10 -k keyfile < cypher > uncypher 
+
+# elifyek
+$ ./encryptUtil -n 10 -k one < keyfile > elifyek
+
+# case1
+$ ./encryptUtil -n 10 -k elifyek < plaintext > case1
+
+# case2
+$ ./encryptUtil -n 10 -k elifyek < sherlock > case2
+
+# case 3
+$ ./encryptUtil -n 10 -k case2 < sherlock > case3
+
+# case 4
+$ ./encryptUtil -n 10 -k sherlock < plaintext > case4
+
+# case 5
+$ ./encryptUtil -n 10 -k keyfile < sherlock > case5
+
+# plaintextcopy
+$ ./encryptUtil -n 10 < plaintext > plaintextcopy
+
+
+# out1
+$ ./encryptUtil -n 10 -k elifyek < case1 > out1
+
+# out[x]
+$ ./encryptUtil -n 10 -k [case_x_key] < case[x] > out[x]
+
+-----
+
+I also ran a modified version of the program that prints thread counts and execution time:
+#command template
+$ ./printUtil -n [x] -k case4 < sherlock > print_threads[x]
+
+#output
+print_threads1 # ran 345 threads 1 at a time in 153 ms. 
+print_threads10 # ran 345 threads 8 at a time in 27 ms.
+print_threads100 # ran 345 threads 8 at a time in 27 ms.
